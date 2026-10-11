@@ -10,10 +10,12 @@
     <meta name="apple-mobile-web-app-title" content="เดี๋ยวเลากินเอง">
     <link rel="apple-touch-icon" href="https://img.icons8.com/emoji/192/avocado-emoji.png">
     
-    <!-- Tailwind CSS for UI -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js for Donut Chart -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body class="bg-slate-900 text-white min-h-screen pb-24 font-sans antialiased selection:bg-orange-500">
 
@@ -26,18 +28,35 @@
 
         <!-- Tab 1: Calorie Tracker -->
         <section id="tab-tracker" class="tab-content space-y-6">
-            <!-- Calorie Overview Chart -->
+            
+            <!-- Dashboard Card -->
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg text-center relative">
-                <div class="w-48 h-48 mx-auto relative flex items-center justify-center">
+                <div class="w-44 h-44 mx-auto relative flex items-center justify-center">
                     <canvas id="macroChart"></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span id="remainingCal" class="text-3xl font-extrabold text-orange-400">2000</span>
-                        <span class="text-xs text-slate-400">แคลอรี่คงเหลือ (kcal)</span>
+                        <span id="remainingCal" class="text-3xl font-extrabold text-green-400">2000</span>
+                        <span class="text-xs text-slate-400">Net kcal คงเหลือ</span>
                     </div>
                 </div>
                 
+                <!-- Net Calorie Summary -->
+                <div class="grid grid-cols-3 gap-2 mt-4 text-xs bg-slate-900/80 p-3 rounded-xl border border-slate-700">
+                    <div>
+                        <div class="text-slate-400">ทานไป</div>
+                        <div id="totalEaten" class="font-bold text-sm text-orange-400">0 kcal</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-400">เบิร์นออก</div>
+                        <div id="totalBurned" class="font-bold text-sm text-red-400">-0 kcal</div>
+                    </div>
+                    <div>
+                        <div class="text-slate-400">เป้าหมาย</div>
+                        <div id="targetCal" class="font-bold text-sm text-blue-400">2000 kcal</div>
+                    </div>
+                </div>
+
                 <!-- Macros Summary -->
-                <div class="grid grid-cols-3 gap-2 mt-4 text-sm">
+                <div class="grid grid-cols-3 gap-2 mt-3 text-sm">
                     <div class="bg-slate-900/60 p-2 rounded-xl border border-red-500/30">
                         <div class="text-red-400 font-medium text-xs">โปรตีน</div>
                         <div id="totalProtein" class="font-bold text-base">0g</div>
@@ -53,7 +72,24 @@
                 </div>
             </div>
 
-            <!-- Water Intake Section -->
+            <!-- Activity Input (Mi Fitness / Apple Health Sync Manual) -->
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="font-bold text-orange-400 flex items-center gap-1">⌚ กิจกรรมประจำวัน</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">จำนวนก้าวเดิน</label>
+                        <input type="number" id="stepCountInput" placeholder="0 ก้าว" onchange="updateActivityData()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-sm focus:outline-none focus:border-orange-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-400 mb-1">เบิร์นออก (Active kcal)</label>
+                        <input type="number" id="burnedCalInput" placeholder="0 kcal" onchange="updateActivityData()" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2 text-sm focus:outline-none focus:border-orange-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Water Tracker -->
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
                 <div class="flex justify-between items-center text-sm">
                     <span class="font-bold text-blue-400 flex items-center gap-1">💧 ติดตามการดื่มน้ำ</span>
@@ -72,9 +108,17 @@
                 </div>
             </div>
 
-            <!-- Food Add Form -->
+            <!-- Food Add Form + Gemini AI Scan -->
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
                 <h2 class="font-bold text-slate-200">➕ บันทึกอาหาร</h2>
+                
+                <!-- Gemini AI Scan Button -->
+                <div class="bg-slate-900/60 p-3 rounded-xl border border-orange-500/30 space-y-2">
+                    <label class="block text-xs text-orange-400 font-bold">🪄 สแกนรูปอาหารด้วย Gemini AI</label>
+                    <input type="file" id="geminiImageInput" accept="image/*" onchange="analyzeWithGemini()" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-orange-500 file:text-white hover:file:bg-orange-600">
+                    <div id="aiStatus" class="text-xs text-slate-400 hidden italic">กำลังวิเคราะห์สารอาหาร... ⏳</div>
+                </div>
+
                 <input type="text" id="foodName" placeholder="ชื่ออาหาร (เช่น ข้าวมันไก่)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm focus:outline-none focus:border-orange-500">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="number" id="foodCal" placeholder="แคลอรี่ (kcal)" class="bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-sm focus:outline-none focus:border-orange-500">
@@ -92,16 +136,34 @@
             <!-- Today Food List -->
             <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
                 <h2 class="font-bold text-slate-200">🍽️ อาหารวันนี้</h2>
-                <div id="todayList" class="space-y-2 divide-y divide-slate-700">
-                    <!-- Dynamic List -->
-                </div>
+                <div id="todayList" class="space-y-2 divide-y divide-slate-700"></div>
             </div>
         </section>
 
-        <!-- Tab 2: Settings & TDEE Calculator -->
+        <!-- Tab 2: History & Export -->
+        <section id="tab-history" class="tab-content hidden space-y-6">
+            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-4">
+                <h2 class="font-bold text-orange-400 text-lg">📊 ส่งออกรายงาน (Export)</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="exportPDF()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all">
+                        📄 ส่งออก PDF
+                    </button>
+                    <button onclick="exportCSV()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-all">
+                        📊 ส่งออก CSV
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
+                <h2 class="font-bold text-slate-200">📅 ประวัติย้อนหลัง</h2>
+                <div id="fullHistoryList" class="space-y-3 divide-y divide-slate-700 text-sm"></div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Settings & TDEE Calculator -->
         <section id="tab-settings" class="tab-content hidden space-y-6">
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 space-y-4">
-                <h2 class="font-bold text-orange-400 text-lg">⚙️ ตั้งค่าเป้าหมาย TDEE</h2>
+                <h2 class="font-bold text-orange-400 text-lg">⚙️ คำนวณ BMR & TDEE</h2>
                 
                 <div class="space-y-3 text-sm">
                     <div>
@@ -156,23 +218,31 @@
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 p-3 flex justify-around text-xs">
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-md border-t border-slate-800 p-3 flex justify-around text-xs z-50">
         <button onclick="switchTab('tracker')" id="nav-tracker" class="flex flex-col items-center gap-1 text-orange-400 font-bold">
             <span class="text-lg">🥑</span>
             <span>นับแคล</span>
         </button>
+        <button onclick="switchTab('history')" id="nav-history" class="flex flex-col items-center gap-1 text-slate-400">
+            <span class="text-lg">📅</span>
+            <span>ประวัติ</span>
+        </button>
         <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-slate-400">
             <span class="text-lg">⚙️</span>
-            <span>ตั้งค่า TDEE</span>
+            <span>เป้าหมาย</span>
         </button>
     </nav>
 
-    <!-- JavaScript Application Logic -->
+    <!-- App Logic JavaScript -->
     <script>
+        const GEMINI_API_KEY = "AQ.Ab8RN6JemIi_fZ4-DeL1YVRKRNxjR4il1rmOmRirFAfI8t57hA";
+
         let state = {
             dailyGoal: parseInt(localStorage.getItem('saved_dailyGoal')) || 2000,
             waterIntake: parseInt(localStorage.getItem('saved_waterIntake')) || 0,
             waterGoal: 2000,
+            stepCount: parseInt(localStorage.getItem('saved_stepCount')) || 0,
+            burnedCal: parseInt(localStorage.getItem('saved_burnedCal')) || 0,
             foodEntries: JSON.parse(localStorage.getItem('saved_foodEntries')) || []
         };
 
@@ -201,29 +271,35 @@
             const today = new Date().toDateString();
             const todayEntries = state.foodEntries.filter(e => new Date(e.date).toDateString() === today);
             
-            const totalCal = todayEntries.reduce((a, b) => a + b.calories, 0);
+            const totalEaten = todayEntries.reduce((a, b) => a + b.calories, 0);
             const totalP = todayEntries.reduce((a, b) => a + b.protein, 0);
             const totalC = todayEntries.reduce((a, b) => a + b.carbs, 0);
             const totalF = todayEntries.reduce((a, b) => a + b.fat, 0);
 
-            const remaining = state.dailyGoal - totalCal;
+            const netEaten = totalEaten - state.burnedCal;
+            const remaining = state.dailyGoal - netEaten;
+
             document.getElementById('remainingCal').innerText = remaining;
+            document.getElementById('totalEaten').innerText = totalEaten + ' kcal';
+            document.getElementById('totalBurned').innerText = '-' + state.burnedCal + ' kcal';
+            document.getElementById('targetCal').innerText = state.dailyGoal + ' kcal';
+
             document.getElementById('totalProtein').innerText = totalP + 'g';
             document.getElementById('totalCarbs').innerText = totalC + 'g';
             document.getElementById('totalFat').innerText = totalF + 'g';
 
-            // Chart Update
+            document.getElementById('stepCountInput').value = state.stepCount || '';
+            document.getElementById('burnedCalInput').value = state.burnedCal || '';
+
             if (chart) {
                 chart.data.datasets[0].data = [totalP || 1, totalC || 1, totalF || 1];
                 chart.update();
             }
 
-            // Water Update
             document.getElementById('waterText').innerText = `${state.waterIntake} / ${state.waterGoal} ml`;
             const waterPercent = Math.min(100, (state.waterIntake / state.waterGoal) * 100);
             document.getElementById('waterBar').style.width = waterPercent + '%';
 
-            // Today List Update
             const listEl = document.getElementById('todayList');
             if (todayEntries.length === 0) {
                 listEl.innerHTML = `<div class="text-slate-500 text-xs italic text-center py-2">ยังไม่มีรายการอาหารวันนี้</div>`;
@@ -239,7 +315,16 @@
                 `).join('');
             }
 
+            renderHistory();
             calculateBMR();
+        }
+
+        function updateActivityData() {
+            state.stepCount = parseInt(document.getElementById('stepCountInput').value) || 0;
+            state.burnedCal = parseInt(document.getElementById('burnedCalInput').value) || 0;
+            localStorage.setItem('saved_stepCount', state.stepCount);
+            localStorage.setItem('saved_burnedCal', state.burnedCal);
+            updateUI();
         }
 
         function addFood() {
@@ -251,7 +336,7 @@
 
             if (!name || !cal) return alert('กรุณากรอกชื่ออาหารและแคลอรี่');
 
-            state.foodEntries.push({ name, calories: cal, protein: p, carbs: c, fat: f, date: new Date() });
+            state.foodEntries.unshift({ name, calories: cal, protein: p, carbs: c, fat: f, date: new Date() });
             localStorage.setItem('saved_foodEntries', JSON.stringify(state.foodEntries));
 
             document.getElementById('foodName').value = '';
@@ -261,6 +346,61 @@
             document.getElementById('foodFat').value = '';
 
             updateUI();
+        }
+
+        async function analyzeWithGemini() {
+            const input = document.getElementById('geminiImageInput');
+            const status = document.getElementById('aiStatus');
+            if (!input.files || !input.files[0]) return;
+
+            status.classList.remove('hidden');
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function (e) {
+                const base64Data = e.target.result.split(',')[1];
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const promptText = `วิเคราะห์รูปภาพอาหารนี้ ตอบกลับมาเฉพาะข้อความ JSON รูปแบบนี้เท่านั้น:
+                {
+                  "name": "ชื่ออาหารภาษาไทยสั้นๆ",
+                  "calories": ตัวเลขแคลอรี่โดยประมาณ,
+                  "protein": ตัวเลขโปรตีนโดยประมาณในหน่วยกรัม,
+                  "carbs": ตัวเลขคาร์โบไฮเดรตโดยประมาณในหน่วยกรัม,
+                  "fat": ตัวเลขไขมันโดยประมาณในหน่วยกรัม
+                }`;
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [
+                                    { text: promptText },
+                                    { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+                                ]
+                            }]
+                        })
+                    });
+
+                    const data = await res.json();
+                    const textResult = data.candidates[0].content.parts[0].text.replace(/```json|```/g, '').trim();
+                    const json = JSON.parse(textResult);
+
+                    document.getElementById('foodName').value = json.name || '';
+                    document.getElementById('foodCal').value = json.calories || '';
+                    document.getElementById('foodProtein').value = json.protein || 0;
+                    document.getElementById('foodCarbs').value = json.carbs || 0;
+                    document.getElementById('foodFat').value = json.fat || 0;
+                    alert('✨ สแกนสำเร็จแล้ว!');
+                } catch (err) {
+                    alert('การสแกนล้มเหลว กรุณาลองอีกครั้ง');
+                } finally {
+                    status.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         function addWater(amount) {
@@ -294,15 +434,59 @@
             updateUI();
         }
 
+        function renderHistory() {
+            const historyEl = document.getElementById('fullHistoryList');
+            if (state.foodEntries.length === 0) {
+                historyEl.innerHTML = `<div class="text-slate-500 text-xs italic text-center py-2">ยังไม่มีประวัติการบันทึก</div>`;
+                return;
+            }
+
+            historyEl.innerHTML = state.foodEntries.map(e => `
+                <div class="flex justify-between items-center pt-2">
+                    <div>
+                        <div class="font-bold text-slate-200">${e.name}</div>
+                        <div class="text-xs text-slate-400">${new Date(e.date).toLocaleDateString('th-TH')} - P:${e.protein}g | C:${e.carbs}g | F:${e.fat}g</div>
+                    </div>
+                    <div class="font-bold text-orange-400">${e.calories} kcal</div>
+                </div>
+            `).join('');
+        }
+
+        function exportCSV() {
+            let csv = "Date,Food Name,Calories,Protein,Carbs,Fat\n";
+            state.foodEntries.forEach(e => {
+                csv += `"${new Date(e.date).toLocaleDateString('th-TH')}","${e.name}",${e.calories},${e.protein},${e.carbs},${e.fat}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'CalorieReport.csv');
+            a.click();
+        }
+
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Calorie & Food History Report", 10, 10);
+            let y = 20;
+            state.foodEntries.forEach((e, i) => {
+                if (y > 280) { doc.addPage(); y = 10; }
+                doc.text(`${i+1}. ${e.name} - ${e.calories} kcal (${new Date(e.date).toLocaleDateString()})`, 10, y);
+                y += 10;
+            });
+            doc.save("CalorieReport.pdf");
+        }
+
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('tab-' + tab).classList.remove('hidden');
 
-            document.getElementById('nav-tracker').className = tab === 'tracker' ? 'flex flex-col items-center gap-1 text-orange-400 font-bold' : 'flex flex-col items-center gap-1 text-slate-400';
-            document.getElementById('nav-settings').className = tab === 'settings' ? 'flex flex-col items-center gap-1 text-orange-400 font-bold' : 'flex flex-col items-center gap-1 text-slate-400';
+            ['tracker', 'history', 'settings'].forEach(t => {
+                document.getElementById('nav-' + t).className = t === tab ? 'flex flex-col items-center gap-1 text-orange-400 font-bold' : 'flex flex-col items-center gap-1 text-slate-400';
+            });
         }
 
-        // Add Event Listeners for inputs
         ['calcGender', 'calcWeight', 'calcHeight', 'calcAge', 'calcActivity'].forEach(id => {
             document.getElementById(id).addEventListener('input', calculateBMR);
         });
@@ -314,4 +498,3 @@
     </script>
 </body>
 </html>
-
