@@ -404,8 +404,6 @@
 
     <!-- App Logic JavaScript -->
     <script>
-        const GEMINI_API_KEY = "AQ.Ab8RN6JemIi_fZ4-DeL1YVRKRNxjR4il1rmOmRirFAfI8t57hA";
-
         let state = {
             dailyGoal: parseInt(localStorage.getItem('saved_dailyGoal')) || 2000,
             targetProtein: parseInt(localStorage.getItem('saved_targetProtein')) || 120,
@@ -552,7 +550,7 @@
             }
         }
 
-        // ฟังก์ชันช่วยย่อขนาดรูปภาพก่อนส่งไป Gemini API (ป้องกันไฟล์ใหญ่สแกนล้มเหลว)
+        // ย่อรูปภาพก่อนส่ง API ป้องกันไฟล์ใหญ่สแกนหลุด
         function compressImage(file, maxWidth = 800) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -583,6 +581,18 @@
         }
 
         async function analyzeWithGemini() {
+            // ดึง Key จาก localStorage หรือถามผู้ใช้หากยังไม่มี
+            let apiKey = localStorage.getItem('saved_geminiKey');
+            if (!apiKey) {
+                apiKey = prompt('กรุณากรอก Gemini API Key ของคุณเพื่อใช้งานสแกนอาหาร (หาได้ฟรีจาก Google AI Studio):');
+                if (apiKey) {
+                    apiKey = apiKey.trim();
+                    localStorage.setItem('saved_geminiKey', apiKey);
+                } else {
+                    return;
+                }
+            }
+
             const input = document.getElementById('geminiImageInput');
             const status = document.getElementById('aiStatus');
             if (!input.files || !input.files[0]) return;
@@ -591,15 +601,12 @@
             const file = input.files[0];
 
             try {
-                // บีบอัดภาพก่อนส่ง
                 const base64Data = await compressImage(file);
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 
-                // ใช้ Gemini API Endpoint ปัจจุบัน
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-                
-                const promptText = `วิเคราะห์รูปภาพอาหารนี้ แล้วตอบกลับเป็น JSON เท่านั้นในรูปแบบนี้:
+                const promptText = `วิเคราะห์รูปภาพอาหารนี้ ตอบกลับเป็น JSON ภาษาไทยสั้นๆ เท่านั้นตามรูปแบบนี้:
                 {
-                  "name": "ชื่ออาหารภาษาไทยสั้นๆ",
+                  "name": "ชื่ออาหาร",
                   "calories": 350,
                   "protein": 20,
                   "carbs": 40,
@@ -622,14 +629,16 @@
                 const data = await res.json();
 
                 if (!res.ok || !data.candidates || !data.candidates[0]) {
-                    throw new Error(data.error?.message || 'API Response Error');
+                    if (data.error?.message?.includes('API key')) {
+                        localStorage.removeItem('saved_geminiKey');
+                        throw new Error('API Key ไม่ถูกต้องหรือถูกระงับ กรุณาลองใหม่อีกครั้ง');
+                    }
+                    throw new Error(data.error?.message || 'การเชื่อมต่อ API ล้มเหลว');
                 }
 
                 let textResult = data.candidates[0].content.parts[0].text;
-                
-                // สกัดหาโครงสร้าง JSON
                 const jsonMatch = textResult.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error('Invalid JSON format');
+                if (!jsonMatch) throw new Error('รูปแบบข้อมูลตอบกลับไม่ถูกต้อง');
 
                 const json = JSON.parse(jsonMatch[0]);
 
@@ -638,14 +647,14 @@
                 document.getElementById('foodProtein').value = json.protein || 0;
                 document.getElementById('foodCarbs').value = json.carbs || 0;
                 document.getElementById('foodFat').value = json.fat || 0;
-                alert('✨ Gemini AI สแกนสารอาหารเรียบร้อยแล้ว!');
+                alert('✨ Gemini AI สแกนเรียบร้อยแล้ว!');
 
             } catch (err) {
                 console.error('Gemini Error:', err);
-                alert('การสแกนล้มเหลว กรุณาลองใช้อีกครั้ง หรือกรอกข้อมูลด้วยตัวเองนะครับ 😅');
+                alert(`สแกนไม่สำเร็จ: ${err.message}`);
             } finally {
                 status.classList.add('hidden');
-                input.value = ''; // Reset file input
+                input.value = '';
             }
         }
 
@@ -668,11 +677,9 @@
             bmr = gender === 'male' ? bmr + 5 : bmr - 161;
             const tdee = bmr * act;
 
-            // คำนวณตัดแคลอรี่ตามความเร็ว (1 kg fat = 7700 kcal -> 0.5kg/week = 500 kcal/day deficit)
             const calDeficit = pace * 1000;
-            let targetGoalCal = Math.max(bmr, Math.round(tdee - calDeficit)); // ห้ามต่ำกว่า BMR
+            let targetGoalCal = Math.max(bmr, Math.round(tdee - calDeficit));
 
-            // คำนวณระยะเวลา (สัปดาห์ / เดือน)
             const weightDiff = w - targetW;
             let estWeeks = 0;
             let timeText = "บรรลุเป้าหมายแล้ว 🎉";
@@ -682,7 +689,6 @@
                 timeText = `${estWeeks} สัปดาห์ (~${estMonths} เดือน) ⏳`;
             }
 
-            // คำนวณสัดส่วนสารอาหารแนะนำ (Protein 30%, Carbs 40%, Fat 30%)
             const recP = Math.round((targetGoalCal * 0.30) / 4);
             const recC = Math.round((targetGoalCal * 0.40) / 4);
             const recF = Math.round((targetGoalCal * 0.30) / 9);
