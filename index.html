@@ -23,17 +23,19 @@
                         sans: ['Mitr', 'sans-serif'],
                     },
                     colors: {
-                        avo: {
-                            50: '#f4f8f0',
-                            100: '#e5f0dc',
-                            200: '#cbe1ba',
-                            300: '#a7cd8f',
-                            400: '#81b262',
-                            500: '#639644',
-                            600: '#4c7833',
-                            700: '#3c5e2a',
-                            800: '#263b1a',
-                            900: '#192611',
+                        pastel: {
+                            bg: '#253323',          /* เขียวเข้มพื้นหลังหลัก */
+                            card: '#344532',        /* เขียวการ์ด */
+                            cardInner: '#1E291C',   /* เขียวเข้มในกล่องข้อความ */
+                            olive: '#A3B982',       /* เขียวมะกอกพาสเทล */
+                            sage: '#C0D89D',        /* เขียวอ่อนพาสเทล */
+                            cream: '#F5F5E9',       /* ครีมนม */
+                            sky: '#95CBF8',         /* ฟ้าพาสเทล */
+                            skyLight: '#CBE5FC',    /* ฟ้าอ่อน */
+                            pink: '#F7A8B8',        /* ชมพูพาสเทล */
+                            pinkLight: '#FCD2DB',   /* ชมพูอ่อน */
+                            textMain: '#F0F5E8',    /* ข้อความสว่าง */
+                            textMuted: '#9BB08F',   /* ข้อความจาง */
                         }
                     }
                 }
@@ -45,10 +47,10 @@
     <style>
         body { font-family: 'Mitr', sans-serif; }
         .glass-card {
-            background: rgba(38, 59, 26, 0.75);
+            background: rgba(52, 69, 50, 0.85);
             backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(167, 205, 143, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1.5px solid rgba(163, 185, 130, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25);
         }
         .btn-bounce {
             transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -58,13 +60,13 @@
         }
     </style>
 </head>
-<body class="bg-avo-900 text-avo-50 min-h-screen pb-28 selection:bg-avo-300 selection:text-avo-900">
+<body class="bg-pastel-bg text-pastel-textMain min-h-screen pb-28 selection:bg-pastel-sage selection:text-pastel-bg">
 
     <!-- Header Bar -->
-    <header class="sticky top-0 bg-avo-900/80 backdrop-blur-lg z-50 border-b border-avo-700/40 p-4 text-center">
-        <h1 class="text-2xl font-bold text-avo-200 flex items-center justify-center gap-2 drop-shadow-md">
+    <header class="sticky top-0 bg-pastel-bg/90 backdrop-blur-lg z-50 border-b border-pastel-olive/30 p-4 text-center">
+        <h1 class="text-2xl font-bold text-pastel-cream flex items-center justify-center gap-2 drop-shadow-md">
             <span class="text-3xl animate-bounce">🥑</span> 
-            <span class="bg-gradient-to-r from-avo-200 via-emerald-200 to-amber-200 bg-clip-text text-transparent">เดี๋ยวเลากินเอง</span> 
+            <span class="text-pastel-sage">เดี๋ยวเลากินเอง</span> 
             <span class="text-3xl">🥗</span>
         </h1>
     </header>
@@ -76,76 +78,73 @@
             
             <!-- Dashboard Card -->
             <div class="glass-card p-6 rounded-3xl text-center relative overflow-hidden">
-                <div class="absolute -top-6 -right-6 text-7xl opacity-10 pointer-events-none">🥑</div>
-                <div class="absolute -bottom-6 -left-6 text-7xl opacity-10 pointer-events-none">🥐</div>
-
                 <div class="w-48 h-48 mx-auto relative flex items-center justify-center my-2">
                     <canvas id="macroChart"></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                         <span class="text-3xl mb-1 animate-pulse">🥑</span>
-                        <span id="remainingCal" class="text-4xl font-black text-avo-100 drop-shadow">2000</span>
-                        <span class="text-xs text-avo-300 font-medium">Net kcal คงเหลือ 🎯</span>
+                        <span id="remainingCal" class="text-4xl font-black text-pastel-cream drop-shadow">2000</span>
+                        <span class="text-xs text-pastel-sage font-medium">Net kcal คงเหลือ 🎯</span>
                     </div>
                 </div>
                 
                 <!-- Net Calorie Summary -->
-                <div class="grid grid-cols-3 gap-2 mt-4 text-xs bg-avo-900/90 p-3.5 rounded-2xl border border-avo-700/50">
+                <div class="grid grid-cols-3 gap-2 mt-4 text-xs bg-pastel-cardInner p-3.5 rounded-2xl border border-pastel-olive/20">
                     <div class="flex flex-col items-center">
                         <span class="text-xl mb-1">🍗</span>
-                        <span class="text-avo-300">ทานไป</span>
-                        <span id="totalEaten" class="font-extrabold text-sm text-amber-300">0 kcal</span>
+                        <span class="text-pastel-textMuted">ทานไป</span>
+                        <span id="totalEaten" class="font-extrabold text-sm text-pastel-cream">0 kcal</span>
                     </div>
-                    <div class="flex flex-col items-center border-x border-avo-700/50 px-1">
+                    <div class="flex flex-col items-center border-x border-pastel-olive/20 px-1">
                         <span class="text-xl mb-1">🔥</span>
-                        <span class="text-avo-300">เบิร์นออก</span>
-                        <span id="totalBurned" class="font-extrabold text-sm text-rose-300">-0 kcal</span>
+                        <span class="text-pastel-textMuted">เบิร์นออก</span>
+                        <span id="totalBurned" class="font-extrabold text-sm text-pastel-pink">-0 kcal</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <span class="text-xl mb-1">🎯</span>
-                        <span class="text-avo-300">เป้าหมาย</span>
-                        <span id="targetCal" class="font-extrabold text-sm text-emerald-300">2000 kcal</span>
+                        <span class="text-pastel-textMuted">เป้าหมาย</span>
+                        <span id="targetCal" class="font-extrabold text-sm text-pastel-sage">2000 kcal</span>
                     </div>
                 </div>
 
-                <!-- Macros Summary -->
-                <div class="grid grid-cols-3 gap-2 mt-3">
-                    <div class="bg-rose-950/40 p-3 rounded-2xl border border-rose-500/30 flex flex-col items-center">
+                <!-- Macros Summary Progress -->
+                <div class="grid grid-cols-3 gap-2 mt-3 text-xs">
+                    <div class="bg-pastel-pink/20 p-3 rounded-2xl border border-pastel-pink/30 flex flex-col items-center">
                         <span class="text-2xl mb-1">🥩</span>
-                        <span class="text-rose-300 font-medium text-xs">โปรตีน</span>
-                        <span id="totalProtein" class="font-black text-base text-rose-100">0g</span>
+                        <span class="text-pastel-pinkLight font-medium">โปรตีน</span>
+                        <span id="totalProtein" class="font-black text-sm text-pastel-cream mt-0.5">0 / 0g</span>
                     </div>
-                    <div class="bg-amber-950/40 p-3 rounded-2xl border border-amber-500/30 flex flex-col items-center">
+                    <div class="bg-pastel-sky/20 p-3 rounded-2xl border border-pastel-sky/30 flex flex-col items-center">
                         <span class="text-2xl mb-1">🍚</span>
-                        <span class="text-amber-300 font-medium text-xs">คาร์บ</span>
-                        <span id="totalCarbs" class="font-black text-base text-amber-100">0g</span>
+                        <span class="text-pastel-skyLight font-medium">คาร์บ</span>
+                        <span id="totalCarbs" class="font-black text-sm text-pastel-cream mt-0.5">0 / 0g</span>
                     </div>
-                    <div class="bg-yellow-950/40 p-3 rounded-2xl border border-yellow-500/30 flex flex-col items-center">
+                    <div class="bg-pastel-sage/20 p-3 rounded-2xl border border-pastel-sage/30 flex flex-col items-center">
                         <span class="text-2xl mb-1">🧀</span>
-                        <span class="text-yellow-300 font-medium text-xs">ไขมัน</span>
-                        <span id="totalFat" class="font-black text-base text-yellow-100">0g</span>
+                        <span class="text-pastel-sage font-medium">ไขมัน</span>
+                        <span id="totalFat" class="font-black text-sm text-pastel-cream mt-0.5">0 / 0g</span>
                     </div>
                 </div>
             </div>
 
             <!-- Activity Input -->
             <div class="glass-card p-5 rounded-3xl space-y-3">
-                <div class="flex items-center gap-2 text-sm font-bold text-avo-200">
+                <div class="flex items-center gap-2 text-sm font-bold text-pastel-sage">
                     <span class="text-2xl">⌚</span>
                     <span>กิจกรรมประจำวัน</span>
                     <span class="text-xl">🏃‍♂️</span>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-avo-900/80 p-3 rounded-2xl border border-avo-700/40">
-                        <label class="block text-xs text-avo-300 mb-1 flex items-center gap-1">
+                    <div class="bg-pastel-cardInner p-3 rounded-2xl border border-pastel-olive/20">
+                        <label class="block text-xs text-pastel-textMuted mb-1 flex items-center gap-1">
                             <span class="text-base">👟</span> จำนวนก้าวเดิน
                         </label>
-                        <input type="number" id="stepCountInput" placeholder="0 ก้าว" onchange="updateActivityData()" oninput="updateActivityData()" class="w-full bg-transparent font-bold text-lg focus:outline-none text-avo-100">
+                        <input type="number" id="stepCountInput" placeholder="0 ก้าว" onchange="updateActivityData()" oninput="updateActivityData()" class="w-full bg-transparent font-bold text-lg focus:outline-none text-pastel-cream">
                     </div>
-                    <div class="bg-avo-900/80 p-3 rounded-2xl border border-avo-700/40">
-                        <label class="block text-xs text-avo-300 mb-1 flex items-center gap-1">
+                    <div class="bg-pastel-cardInner p-3 rounded-2xl border border-pastel-olive/20">
+                        <label class="block text-xs text-pastel-textMuted mb-1 flex items-center gap-1">
                             <span class="text-base">🔥</span> เบิร์นออก (kcal)
                         </label>
-                        <input type="number" id="burnedCalInput" placeholder="0 kcal" onchange="updateActivityData()" oninput="updateActivityData()" class="w-full bg-transparent font-bold text-lg focus:outline-none text-amber-300">
+                        <input type="number" id="burnedCalInput" placeholder="0 kcal" onchange="updateActivityData()" oninput="updateActivityData()" class="w-full bg-transparent font-bold text-lg focus:outline-none text-pastel-pink">
                     </div>
                 </div>
             </div>
@@ -153,21 +152,21 @@
             <!-- Water Tracker -->
             <div class="glass-card p-5 rounded-3xl space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="font-bold text-sky-200 flex items-center gap-2 text-sm">
+                    <span class="font-bold text-pastel-skyLight flex items-center gap-2 text-sm">
                         <span class="text-2xl">🧊</span>
                         <span>ติดตามการดื่มน้ำ</span>
                         <span class="text-xl">💧</span>
                     </span>
-                    <span id="waterText" class="text-sky-300 font-extrabold text-sm bg-sky-950/60 px-3 py-1 rounded-full border border-sky-500/30">0 / 2000 ml</span>
+                    <span id="waterText" class="text-pastel-sky font-extrabold text-sm bg-pastel-cardInner px-3 py-1 rounded-full border border-pastel-sky/30">0 / 2000 ml</span>
                 </div>
-                <div class="w-full bg-avo-900 rounded-full h-4 overflow-hidden p-0.5 border border-avo-700">
-                    <div id="waterBar" class="bg-gradient-to-r from-sky-400 to-blue-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                <div class="w-full bg-pastel-cardInner rounded-full h-4 overflow-hidden p-0.5 border border-pastel-olive/20">
+                    <div id="waterBar" class="bg-gradient-to-r from-pastel-sky to-sky-400 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
                 <div class="flex gap-2 pt-1">
-                    <button onclick="addWater(45)" class="btn-bounce flex-1 bg-sky-500/20 text-sky-200 hover:bg-sky-500/30 py-3 rounded-2xl font-bold text-sm border border-sky-400/40 flex items-center justify-center gap-1 shadow-sm">
+                    <button onclick="addWater(45)" class="btn-bounce flex-1 bg-pastel-sky/20 text-pastel-skyLight hover:bg-pastel-sky/30 py-3 rounded-2xl font-bold text-sm border border-pastel-sky/40 flex items-center justify-center gap-1 shadow-sm">
                         <span class="text-lg">💧</span> +45 ml
                     </button>
-                    <button onclick="addWater(-45)" class="btn-bounce flex-1 bg-avo-800/80 text-avo-300 hover:bg-avo-700 py-3 rounded-2xl font-bold text-sm border border-avo-700 flex items-center justify-center gap-1">
+                    <button onclick="addWater(-45)" class="btn-bounce flex-1 bg-pastel-cardInner text-pastel-textMuted hover:bg-pastel-card py-3 rounded-2xl font-bold text-sm border border-pastel-olive/20 flex items-center justify-center gap-1">
                         <span class="text-lg">❌</span> -45 ml
                     </button>
                 </div>
@@ -175,21 +174,21 @@
 
             <!-- Food Add Form + Gemini AI Scan -->
             <div class="glass-card p-5 rounded-3xl space-y-4">
-                <h2 class="font-bold text-avo-100 flex items-center gap-2 text-base">
+                <h2 class="font-bold text-pastel-cream flex items-center gap-2 text-base">
                     <span class="text-2xl">➕</span>
                     <span>บันทึกมื้ออาหาร</span>
                     <span class="text-2xl">🍣🍕🍰</span>
                 </h2>
                 
                 <!-- Gemini AI Scan Button -->
-                <div class="bg-gradient-to-br from-avo-900/90 to-emerald-950/80 p-4 rounded-2xl border border-avo-400/30 space-y-2.5 shadow-inner">
-                    <label class="block text-xs text-avo-200 font-bold flex items-center gap-2">
+                <div class="bg-pastel-cardInner p-4 rounded-2xl border border-pastel-olive/30 space-y-2.5">
+                    <label class="block text-xs text-pastel-sage font-bold flex items-center gap-2">
                         <span class="text-2xl animate-spin">🪄</span> 
                         <span>สแกนรูปอาหารด้วย Gemini AI</span>
                         <span class="text-xl">📸</span>
                     </label>
-                    <input type="file" id="geminiImageInput" accept="image/*" onchange="analyzeWithGemini()" class="w-full text-xs text-avo-300 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-avo-400 file:text-avo-950 hover:file:bg-avo-300 cursor-pointer">
-                    <div id="aiStatus" class="text-xs text-amber-300 hidden italic flex items-center gap-2 pt-1">
+                    <input type="file" id="geminiImageInput" accept="image/*" onchange="analyzeWithGemini()" class="w-full text-xs text-pastel-textMuted file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pastel-olive file:text-pastel-bg hover:file:bg-pastel-sage cursor-pointer">
+                    <div id="aiStatus" class="text-xs text-pastel-skyLight hidden italic flex items-center gap-2 pt-1">
                         <span class="text-lg animate-bounce">🤖</span> กำลังสแกนสารอาหารและแคลอรี่... ⏳
                     </div>
                 </div>
@@ -197,118 +196,139 @@
                 <div class="space-y-2.5">
                     <div class="relative">
                         <span class="absolute left-3.5 top-3 text-lg">🍱</span>
-                        <input type="text" id="foodName" placeholder="ชื่ออาหาร (เช่น ข้าวมันไก่)" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-avo-300 text-avo-100">
+                        <input type="text" id="foodName" placeholder="ชื่ออาหาร (เช่น ข้าวมันไก่)" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:border-pastel-olive text-pastel-cream">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="relative">
                             <span class="absolute left-3 top-2.5 text-base">⚡</span>
-                            <input type="number" id="foodCal" placeholder="แคลอรี่ (kcal)" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-avo-300 text-avo-100">
+                            <input type="number" id="foodCal" placeholder="แคลอรี่ (kcal)" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-pastel-olive text-pastel-cream">
                         </div>
                         <div class="relative">
                             <span class="absolute left-3 top-2.5 text-base">🥩</span>
-                            <input type="number" id="foodProtein" placeholder="โปรตีน (g)" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-avo-300 text-avo-100">
+                            <input type="number" id="foodProtein" placeholder="โปรตีน (g)" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-pastel-olive text-pastel-cream">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div class="relative">
                             <span class="absolute left-3 top-2.5 text-base">🍚</span>
-                            <input type="number" id="foodCarbs" placeholder="คาร์บ (g)" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-avo-300 text-avo-100">
+                            <input type="number" id="foodCarbs" placeholder="คาร์บ (g)" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-pastel-olive text-pastel-cream">
                         </div>
                         <div class="relative">
                             <span class="absolute left-3 top-2.5 text-base">🧀</span>
-                            <input type="number" id="foodFat" placeholder="ไขมัน (g)" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-avo-300 text-avo-100">
+                            <input type="number" id="foodFat" placeholder="ไขมัน (g)" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl py-2.5 pl-9 pr-3 text-sm focus:outline-none focus:border-pastel-olive text-pastel-cream">
                         </div>
                     </div>
                 </div>
 
-                <button onclick="addFood()" class="btn-bounce w-full bg-gradient-to-r from-avo-500 to-emerald-600 hover:from-avo-400 hover:to-emerald-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-base">
+                <button onclick="addFood()" class="btn-bounce w-full bg-pastel-olive hover:bg-pastel-sage text-pastel-bg font-extrabold py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-base">
                     <span class="text-xl">🥑</span> บันทึกมื้อนี้เลย! <span class="text-xl">✨</span>
                 </button>
             </div>
 
             <!-- Today Food List -->
             <div class="glass-card p-5 rounded-3xl space-y-3">
-                <h2 class="font-bold text-avo-100 flex items-center gap-2 text-base">
+                <h2 class="font-bold text-pastel-cream flex items-center gap-2 text-base">
                     <span class="text-2xl">🍽️</span>
                     <span>อาหารวันนี้</span>
                     <span class="text-xl">🍎🍇</span>
                 </h2>
-                <div id="todayList" class="space-y-2.5 divide-y divide-avo-700/40"></div>
+                <div id="todayList" class="space-y-2.5 divide-y divide-pastel-olive/20"></div>
             </div>
         </section>
 
         <!-- Tab 2: History & Export -->
         <section id="tab-history" class="tab-content hidden space-y-5">
             <div class="glass-card p-5 rounded-3xl space-y-4">
-                <h2 class="font-bold text-avo-100 text-base flex items-center gap-2">
+                <h2 class="font-bold text-pastel-cream text-base flex items-center gap-2">
                     <span class="text-2xl">📊</span>
                     <span>ส่งออกรายงาน (Export)</span>
                     <span class="text-xl">📄</span>
                 </h2>
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="exportPDF()" class="btn-bounce bg-gradient-to-r from-rose-600 to-red-600 text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
+                    <button onclick="exportPDF()" class="btn-bounce bg-pastel-pink/80 hover:bg-pastel-pink text-pastel-bg font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
                         <span class="text-xl">📄</span> รายงาน PDF
                     </button>
-                    <button onclick="exportCSV()" class="btn-bounce bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
+                    <button onclick="exportCSV()" class="btn-bounce bg-pastel-sage hover:bg-pastel-olive text-pastel-bg font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-sm">
                         <span class="text-xl">📊</span> รายงาน CSV
                     </button>
                 </div>
             </div>
             
             <div class="glass-card p-5 rounded-3xl space-y-3">
-                <h2 class="font-bold text-avo-100 text-base flex items-center gap-2">
+                <h2 class="font-bold text-pastel-cream text-base flex items-center gap-2">
                     <span class="text-2xl">📅</span>
                     <span>ประวัติย้อนหลัง</span>
                     <span class="text-xl">🥙</span>
                 </h2>
-                <div id="fullHistoryList" class="space-y-3 divide-y divide-avo-700/40 text-sm"></div>
+                <div id="fullHistoryList" class="space-y-3 divide-y divide-pastel-olive/20 text-sm"></div>
             </div>
         </section>
 
-        <!-- Tab 3: Settings & TDEE Calculator -->
+        <!-- Tab 3: Settings, Goal & TDEE Calculator -->
         <section id="tab-settings" class="tab-content hidden space-y-5">
             <div class="glass-card p-5 rounded-3xl space-y-4">
-                <h2 class="font-bold text-avo-100 text-base flex items-center gap-2">
-                    <span class="text-2xl">⚙️</span>
-                    <span>คำนวณ BMR & TDEE</span>
-                    <span class="text-xl">🎯</span>
+                <h2 class="font-bold text-pastel-cream text-base flex items-center gap-2">
+                    <span class="text-2xl">🎯</span>
+                    <span>ตั้งค่าเป้าหมายลดน้ำหนัก</span>
                 </h2>
                 
                 <div class="space-y-3 text-sm">
                     <div>
-                        <label class="block text-avo-300 mb-1 flex items-center gap-1.5">
+                        <label class="block text-pastel-sage mb-1 flex items-center gap-1.5">
                             <span class="text-lg">👤</span> เพศ
                         </label>
-                        <select id="calcGender" onchange="calculateBMR()" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl p-3 text-avo-100 focus:outline-none">
+                        <select id="calcGender" onchange="calculateBMR()" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl p-3 text-pastel-cream focus:outline-none">
                             <option value="male">👨 ชาย</option>
                             <option value="female">👩 หญิง</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-3 gap-2">
                         <div>
-                            <label class="block text-avo-300 mb-1 text-xs flex items-center gap-1">
-                                <span class="text-base">⚖️</span> น้ำหนัก (kg)
+                            <label class="block text-pastel-sage mb-1 text-xs flex items-center gap-1">
+                                <span class="text-base">⚖️</span> น้ำหนักปัจจุบัน (kg)
                             </label>
-                            <input type="number" id="calcWeight" value="65" oninput="calculateBMR()" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl p-2.5 text-center font-bold text-avo-100">
+                            <input type="number" id="calcWeight" value="65" oninput="calculateBMR()" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl p-2.5 text-center font-bold text-pastel-cream">
                         </div>
                         <div>
-                            <label class="block text-avo-300 mb-1 text-xs flex items-center gap-1">
+                            <label class="block text-pastel-sage mb-1 text-xs flex items-center gap-1">
                                 <span class="text-base">📏</span> ส่วนสูง (cm)
                             </label>
-                            <input type="number" id="calcHeight" value="170" oninput="calculateBMR()" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl p-2.5 text-center font-bold text-avo-100">
+                            <input type="number" id="calcHeight" value="170" oninput="calculateBMR()" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl p-2.5 text-center font-bold text-pastel-cream">
                         </div>
                         <div>
-                            <label class="block text-avo-300 mb-1 text-xs flex items-center gap-1">
+                            <label class="block text-pastel-sage mb-1 text-xs flex items-center gap-1">
                                 <span class="text-base">🎂</span> อายุ (ปี)
                             </label>
-                            <input type="number" id="calcAge" value="25" oninput="calculateBMR()" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl p-2.5 text-center font-bold text-avo-100">
+                            <input type="number" id="calcAge" value="25" oninput="calculateBMR()" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl p-2.5 text-center font-bold text-pastel-cream">
                         </div>
                     </div>
+
+                    <!-- Target Weight & Weight Loss Speed -->
+                    <div class="p-3.5 bg-pastel-cardInner/80 rounded-2xl border border-pastel-olive/20 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-bold text-pastel-cream flex items-center gap-1.5">
+                                <span class="text-lg">🏁</span> น้ำหนักเป้าหมาย (kg)
+                            </label>
+                            <input type="number" id="targetWeightInput" value="60" oninput="calculateBMR()" class="w-24 bg-pastel-card border border-pastel-olive/30 rounded-xl p-1.5 text-center font-extrabold text-pastel-sage">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-pastel-sage mb-1 flex items-center gap-1">
+                                <span class="text-base">🚀</span> ความเร็วในการลดน้ำหนัก
+                            </label>
+                            <select id="weightLossPace" onchange="calculateBMR()" class="w-full bg-pastel-card border border-pastel-olive/30 rounded-xl p-2 text-xs text-pastel-cream focus:outline-none">
+                                <option value="0.25">🐢 ช้า สบายๆ (-0.25 kg / สัปดาห์)</option>
+                                <option value="0.5" selected>🚶‍♂️ ปานกลาง กำลังดี (-0.5 kg / สัปดาห์)</option>
+                                <option value="0.75">🏃‍♂️ เร็ว สปีด (-0.75 kg / สัปดาห์)</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
-                        <label class="block text-avo-300 mb-1 flex items-center gap-1.5">
-                            <span class="text-lg">🏃‍♂️</span> ระดับกิจกรรม
+                        <label class="block text-pastel-sage mb-1 flex items-center gap-1.5">
+                            <span class="text-lg">🏃‍♂️</span> ระดับกิจกรรมประจำวัน
                         </label>
-                        <select id="calcActivity" onchange="calculateBMR()" class="w-full bg-avo-900/90 border border-avo-700/60 rounded-2xl p-3 text-avo-100 focus:outline-none">
+                        <select id="calcActivity" onchange="calculateBMR()" class="w-full bg-pastel-cardInner border border-pastel-olive/20 rounded-2xl p-3 text-pastel-cream focus:outline-none">
                             <option value="1.2">🛋️ นั่งทำงานอยู่กับที่</option>
                             <option value="1.375" selected>🚶‍♂️ ออกกำลังกาย 1-3 วัน/สัปดาห์</option>
                             <option value="1.55">🏃‍♂️ ออกกำลังกาย 3-5 วัน/สัปดาห์</option>
@@ -317,18 +337,48 @@
                     </div>
                 </div>
 
-                <div class="bg-avo-900/90 p-4 rounded-2xl border border-avo-700/50 space-y-2">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-avo-300 flex items-center gap-1">🔥 BMR (เผาผลาญพื้นฐาน):</span>
-                        <span id="resBMR" class="font-bold text-avo-100">0 kcal</span>
+                <!-- Result Calculation & Estimated Time -->
+                <div class="bg-pastel-cardInner p-4 rounded-2xl border border-pastel-olive/20 space-y-2.5 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-pastel-textMuted">🔥 BMR (เผาผลาญพื้นฐาน):</span>
+                        <span id="resBMR" class="font-bold text-pastel-cream">0 kcal</span>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-avo-300 flex items-center gap-1">🎯 TDEE (เผาผลาญรวม):</span>
-                        <span id="resTDEE" class="font-black text-amber-300 text-base">0 kcal</span>
+                    <div class="flex justify-between">
+                        <span class="text-pastel-textMuted">⚡ TDEE (เผาผลาญรวม):</span>
+                        <span id="resTDEE" class="font-bold text-pastel-cream">0 kcal</span>
+                    </div>
+                    <div class="flex justify-between border-t border-pastel-olive/20 pt-2 text-sm">
+                        <span class="text-pastel-sage font-bold">🎯 แคลอรี่ที่แนะนำทาน/วัน:</span>
+                        <span id="resGoalCal" class="font-black text-pastel-sage">0 kcal</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-pastel-card/60 p-2.5 rounded-xl text-pastel-pinkLight">
+                        <span class="font-bold flex items-center gap-1"><span class="text-base">⏱️</span> ระยะเวลาประมาณ:</span>
+                        <span id="resTimeEst" class="font-extrabold text-sm text-pastel-cream">0 สัปดาห์</span>
                     </div>
                 </div>
 
-                <button onclick="saveTDEEGoal()" class="btn-bounce w-full bg-gradient-to-r from-avo-500 to-emerald-600 hover:from-avo-400 hover:to-emerald-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-sm">
+                <!-- Recommended Macros Recommendation -->
+                <div class="bg-pastel-cardInner p-4 rounded-2xl border border-pastel-olive/20 space-y-2">
+                    <span class="text-xs font-bold text-pastel-sage flex items-center gap-1 mb-1">
+                        <span>🥗</span> สารอาหารแนะนำต่อวัน (เพื่อความกระชับ):
+                    </span>
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="bg-pastel-pink/20 p-2 rounded-xl">
+                            <div class="text-pastel-pinkLight text-[10px]">🥩 โปรตีน</div>
+                            <div id="recProtein" class="font-extrabold text-pastel-cream text-sm">0g</div>
+                        </div>
+                        <div class="bg-pastel-sky/20 p-2 rounded-xl">
+                            <div class="text-pastel-skyLight text-[10px]">🍚 คาร์บ</div>
+                            <div id="recCarbs" class="font-extrabold text-pastel-cream text-sm">0g</div>
+                        </div>
+                        <div class="bg-pastel-sage/20 p-2 rounded-xl">
+                            <div class="text-pastel-sage text-[10px]">🧀 ไขมัน</div>
+                            <div id="recFat" class="font-extrabold text-pastel-cream text-sm">0g</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="saveTDEEGoal()" class="btn-bounce w-full bg-pastel-olive hover:bg-pastel-sage text-pastel-bg font-extrabold py-3.5 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-sm">
                     <span class="text-xl">🎯</span> เซฟเป็นเป้าหมายประจำวัน <span class="text-xl">🥑</span>
                 </button>
             </div>
@@ -337,16 +387,16 @@
     </main>
 
     <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-avo-900/90 backdrop-blur-xl border-t border-avo-700/50 p-3 flex justify-around text-xs z-50">
-        <button onclick="switchTab('tracker')" id="nav-tracker" class="flex flex-col items-center gap-1 text-avo-200 font-extrabold transition-all scale-105">
+    <nav class="fixed bottom-0 left-0 right-0 bg-pastel-bg/95 backdrop-blur-xl border-t border-pastel-olive/20 p-3 flex justify-around text-xs z-50">
+        <button onclick="switchTab('tracker')" id="nav-tracker" class="flex flex-col items-center gap-1 text-pastel-sage font-extrabold transition-all scale-105">
             <span class="text-2xl drop-shadow">🥑</span>
             <span>นับแคล</span>
         </button>
-        <button onclick="switchTab('history')" id="nav-history" class="flex flex-col items-center gap-1 text-avo-400 opacity-60 transition-all">
+        <button onclick="switchTab('history')" id="nav-history" class="flex flex-col items-center gap-1 text-pastel-textMuted opacity-60 transition-all">
             <span class="text-2xl">📅</span>
             <span>ประวัติ</span>
         </button>
-        <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-avo-400 opacity-60 transition-all">
+        <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-pastel-textMuted opacity-60 transition-all">
             <span class="text-2xl">⚙️</span>
             <span>เป้าหมาย</span>
         </button>
@@ -358,12 +408,17 @@
 
         let state = {
             dailyGoal: parseInt(localStorage.getItem('saved_dailyGoal')) || 2000,
+            targetProtein: parseInt(localStorage.getItem('saved_targetProtein')) || 120,
+            targetCarbs: parseInt(localStorage.getItem('saved_targetCarbs')) || 200,
+            targetFat: parseInt(localStorage.getItem('saved_targetFat')) || 60,
             waterIntake: parseInt(localStorage.getItem('saved_waterIntake')) || 0,
             waterGoal: 2000,
             stepCount: parseInt(localStorage.getItem('saved_stepCount')) || 0,
             burnedCal: parseInt(localStorage.getItem('saved_burnedCal')) || 0,
             gender: localStorage.getItem('saved_gender') || 'male',
             weight: localStorage.getItem('saved_weight') || '65',
+            targetWeight: localStorage.getItem('saved_targetWeight') || '60',
+            pace: localStorage.getItem('saved_pace') || '0.5',
             height: localStorage.getItem('saved_height') || '170',
             age: localStorage.getItem('saved_age') || '25',
             activity: localStorage.getItem('saved_activity') || '1.375',
@@ -380,7 +435,7 @@
                     labels: ['โปรตีน', 'คาร์บ', 'ไขมัน'],
                     datasets: [{
                         data: [0, 0, 0],
-                        backgroundColor: ['#f43f5e', '#f59e0b', '#eab308'],
+                        backgroundColor: ['#F7A8B8', '#95CBF8', '#C0D89D'],
                         borderWidth: 0
                     }]
                 },
@@ -394,6 +449,8 @@
         function loadSavedSettings() {
             document.getElementById('calcGender').value = state.gender;
             document.getElementById('calcWeight').value = state.weight;
+            document.getElementById('targetWeightInput').value = state.targetWeight;
+            document.getElementById('weightLossPace').value = state.pace;
             document.getElementById('calcHeight').value = state.height;
             document.getElementById('calcAge').value = state.age;
             document.getElementById('calcActivity').value = state.activity;
@@ -418,9 +475,9 @@
             document.getElementById('totalBurned').innerText = '-' + state.burnedCal + ' kcal';
             document.getElementById('targetCal').innerText = state.dailyGoal + ' kcal';
 
-            document.getElementById('totalProtein').innerText = totalP + 'g';
-            document.getElementById('totalCarbs').innerText = totalC + 'g';
-            document.getElementById('totalFat').innerText = totalF + 'g';
+            document.getElementById('totalProtein').innerText = `${Math.round(totalP)} / ${state.targetProtein}g`;
+            document.getElementById('totalCarbs').innerText = `${Math.round(totalC)} / ${state.targetCarbs}g`;
+            document.getElementById('totalFat').innerText = `${Math.round(totalF)} / ${state.targetFat}g`;
 
             if (chart) {
                 chart.data.datasets[0].data = [totalP || 1, totalC || 1, totalF || 1];
@@ -434,21 +491,21 @@
             // Today Food List
             const listEl = document.getElementById('todayList');
             if (todayEntries.length === 0) {
-                listEl.innerHTML = `<div class="text-avo-400 text-xs italic text-center py-3">ยังไม่มีรายการอาหารวันนี้ 🥗 มาบันทึกกันเถอะ!</div>`;
+                listEl.innerHTML = `<div class="text-pastel-textMuted text-xs italic text-center py-3">ยังไม่มีรายการอาหารวันนี้ 🥗 มาบันทึกกันเถอะ!</div>`;
             } else {
                 listEl.innerHTML = todayEntries.map(e => {
                     const realIndex = state.foodEntries.findIndex(item => item === e);
                     return `
                     <div class="flex justify-between items-center pt-2.5 pb-0.5">
                         <div>
-                            <div class="font-bold text-sm text-avo-100 flex items-center gap-1.5">
+                            <div class="font-bold text-sm text-pastel-cream flex items-center gap-1.5">
                                 <span class="text-lg">🍱</span> ${e.name}
                             </div>
-                            <div class="text-xs text-avo-300 mt-0.5">🥩 ${e.protein}g | 🍚 ${e.carbs}g | 🧀 ${e.fat}g</div>
+                            <div class="text-xs text-pastel-textMuted mt-0.5">🥩 ${e.protein}g | 🍚 ${e.carbs}g | 🧀 ${e.fat}g</div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="font-extrabold text-amber-300 text-sm">${e.calories} kcal</span>
-                            <button onclick="deleteFood(${realIndex})" class="btn-bounce text-rose-300 hover:text-rose-200 text-xs px-2.5 py-1 bg-rose-500/20 rounded-xl border border-rose-500/30">ลบ</button>
+                            <span class="font-extrabold text-pastel-sage text-sm">${e.calories} kcal</span>
+                            <button onclick="deleteFood(${realIndex})" class="btn-bounce text-pastel-pink hover:text-rose-300 text-xs px-2.5 py-1 bg-pastel-pink/20 rounded-xl border border-pastel-pink/30">ลบ</button>
                         </div>
                     </div>
                 `}).join('');
@@ -559,6 +616,8 @@
         function calculateBMR() {
             const gender = document.getElementById('calcGender').value;
             const w = parseFloat(document.getElementById('calcWeight').value) || 0;
+            const targetW = parseFloat(document.getElementById('targetWeightInput').value) || w;
+            const pace = parseFloat(document.getElementById('weightLossPace').value) || 0.5;
             const h = parseFloat(document.getElementById('calcHeight').value) || 0;
             const a = parseFloat(document.getElementById('calcAge').value) || 0;
             const act = parseFloat(document.getElementById('calcActivity').value);
@@ -567,29 +626,65 @@
             bmr = gender === 'male' ? bmr + 5 : bmr - 161;
             const tdee = bmr * act;
 
+            // คำนวณตัดแคลอรี่ตามความเร็ว (1 kg fat = 7700 kcal -> 0.5kg/week = 500 kcal/day deficit)
+            const calDeficit = pace * 1000;
+            let targetGoalCal = Math.max(bmr, Math.round(tdee - calDeficit)); // ห้ามต่ำกว่า BMR
+
+            // คำนวณระยะเวลา (สัปดาห์ / เดือน)
+            const weightDiff = w - targetW;
+            let estWeeks = 0;
+            let timeText = "บรรลุเป้าหมายแล้ว 🎉";
+            if (weightDiff > 0) {
+                estWeeks = Math.ceil(weightDiff / pace);
+                const estMonths = (estWeeks / 4.3).toFixed(1);
+                timeText = `${estWeeks} สัปดาห์ (~${estMonths} เดือน) ⏳`;
+            }
+
+            // คำนวณสัดส่วนสารอาหารแนะนำ (Protein 30%, Carbs 40%, Fat 30%)
+            const recP = Math.round((targetGoalCal * 0.30) / 4);
+            const recC = Math.round((targetGoalCal * 0.40) / 4);
+            const recF = Math.round((targetGoalCal * 0.30) / 9);
+
             document.getElementById('resBMR').innerText = Math.round(bmr) + ' kcal';
             document.getElementById('resTDEE').innerText = Math.round(tdee) + ' kcal';
-            return Math.round(tdee);
+            document.getElementById('resGoalCal').innerText = targetGoalCal + ' kcal';
+            document.getElementById('resTimeEst').innerText = timeText;
+
+            document.getElementById('recProtein').innerText = recP + 'g';
+            document.getElementById('recCarbs').innerText = recC + 'g';
+            document.getElementById('recFat').innerText = recF + 'g';
+
+            return { targetGoalCal, recP, recC, recF };
         }
 
         function saveTDEEGoal() {
-            const tdee = calculateBMR();
+            const { targetGoalCal, recP, recC, recF } = calculateBMR();
             
             state.gender = document.getElementById('calcGender').value;
             state.weight = document.getElementById('calcWeight').value;
+            state.targetWeight = document.getElementById('targetWeightInput').value;
+            state.pace = document.getElementById('weightLossPace').value;
             state.height = document.getElementById('calcHeight').value;
             state.age = document.getElementById('calcAge').value;
             state.activity = document.getElementById('calcActivity').value;
-            state.dailyGoal = tdee;
+            state.dailyGoal = targetGoalCal;
+            state.targetProtein = recP;
+            state.targetCarbs = recC;
+            state.targetFat = recF;
 
             localStorage.setItem('saved_gender', state.gender);
             localStorage.setItem('saved_weight', state.weight);
+            localStorage.setItem('saved_targetWeight', state.targetWeight);
+            localStorage.setItem('saved_pace', state.pace);
             localStorage.setItem('saved_height', state.height);
             localStorage.setItem('saved_age', state.age);
             localStorage.setItem('saved_activity', state.activity);
-            localStorage.setItem('saved_dailyGoal', tdee);
+            localStorage.setItem('saved_dailyGoal', targetGoalCal);
+            localStorage.setItem('saved_targetProtein', recP);
+            localStorage.setItem('saved_targetCarbs', recC);
+            localStorage.setItem('saved_targetFat', recF);
 
-            alert(`บันทึกเป้าหมาย ${tdee} kcal เรียบร้อยแล้ว! 🎯🥑`);
+            alert(`ตั้งเป้าหมายวันละ ${targetGoalCal} kcal เรียบร้อยแล้ว! 🎯🥑`);
             switchTab('tracker');
             updateUI();
         }
@@ -597,21 +692,21 @@
         function renderHistory() {
             const historyEl = document.getElementById('fullHistoryList');
             if (state.foodEntries.length === 0) {
-                historyEl.innerHTML = `<div class="text-avo-400 text-xs italic text-center py-3">ยังไม่มีประวัติการบันทึก 📅</div>`;
+                historyEl.innerHTML = `<div class="text-pastel-textMuted text-xs italic text-center py-3">ยังไม่มีประวัติการบันทึก 📅</div>`;
                 return;
             }
 
             historyEl.innerHTML = state.foodEntries.map((e, index) => `
                 <div class="flex justify-between items-center pt-2.5 pb-0.5">
                     <div>
-                        <div class="font-bold text-avo-100 flex items-center gap-1.5">
+                        <div class="font-bold text-pastel-cream flex items-center gap-1.5">
                             <span class="text-lg">🥗</span> ${e.name}
                         </div>
-                        <div class="text-xs text-avo-300 mt-0.5">${new Date(e.date).toLocaleDateString('th-TH')} - 🥩 ${e.protein}g | 🍚 ${e.carbs}g | 🧀 ${e.fat}g</div>
+                        <div class="text-xs text-pastel-textMuted mt-0.5">${new Date(e.date).toLocaleDateString('th-TH')} - 🥩 ${e.protein}g | 🍚 ${e.carbs}g | 🧀 ${e.fat}g</div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="font-extrabold text-amber-300">${e.calories} kcal</span>
-                        <button onclick="deleteFood(${index})" class="btn-bounce text-rose-300 hover:text-rose-200 text-xs px-2.5 py-1 bg-rose-500/20 rounded-xl border border-rose-500/30">ลบ</button>
+                        <span class="font-extrabold text-pastel-sage">${e.calories} kcal</span>
+                        <button onclick="deleteFood(${index})" class="btn-bounce text-pastel-pink hover:text-rose-300 text-xs px-2.5 py-1 bg-pastel-pink/20 rounded-xl border border-pastel-pink/30">ลบ</button>
                     </div>
                 </div>
             `).join('');
@@ -650,9 +745,9 @@
             ['tracker', 'history', 'settings'].forEach(t => {
                 const navBtn = document.getElementById('nav-' + t);
                 if (t === tab) {
-                    navBtn.className = 'flex flex-col items-center gap-1 text-avo-200 font-extrabold transition-all scale-110 drop-shadow';
+                    navBtn.className = 'flex flex-col items-center gap-1 text-pastel-sage font-extrabold transition-all scale-110 drop-shadow';
                 } else {
-                    navBtn.className = 'flex flex-col items-center gap-1 text-avo-400 opacity-60 transition-all';
+                    navBtn.className = 'flex flex-col items-center gap-1 text-pastel-textMuted opacity-60 transition-all';
                 }
             });
         }
@@ -665,4 +760,3 @@
     </script>
 </body>
 </html>
-
